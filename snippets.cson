@@ -1,0 +1,132 @@
+# Your snippets
+#
+# Atom snippets allow you to enter a simple prefix in the editor and hit tab to
+# expand the prefix into a larger code block with templated values.
+#
+# You can create a new snippet in this file by typing "snip" and then hitting
+# tab.
+#
+# An example CoffeeScript snippet to expand log to console.log:
+#
+# '.source.coffee':
+#   'Console log':
+#     'prefix': 'log'
+#     'body': 'console.log $1'
+#
+# Each scope (e.g. '.source.coffee' above) can only be declared once.
+#
+# This file uses CoffeeScript Object Notation (CSON).
+# If you are unfamiliar with CSON, you can read more about it in the
+# Atom Flight Manual:
+# http://flight-manual.atom.io/using-atom/sections/basic-customization/#_cson
+
+#------------------------------ PHP SNIPPETS ---------------------------------
+'.html.text.php':
+  'construct function':
+    'prefix': 'l:construct'
+    'body': """
+    /**
+    * Create a new object instance
+    *
+    * @return void
+    */
+    public function __construct()
+    {
+      //code...
+    }
+    """
+  'font awesome icon':
+    'prefix': 'ifa'
+    'body': '<i class="fa fa-" aria-hidden="true"></i>'
+#-------------------------PYTHON SNIPPETS-------------------------------------
+
+# DJANGO SNIPPETS
+'.source.python':
+  'CharField':
+    'prefix': 'dj.cf'
+    'body':"${1:fieldname}=models.CharField(max_length=${2:0},null=True)$3"
+  'DateTime Field':
+    'prefix': 'dj.dt'
+    'body':'${1:fieldname}=models.DateTimeField()$2'
+  'Django Model':
+    'prefix': 'dj.mo'
+    'body': """
+      class ${1:model_name}(models.Model):
+          "Docstring for ${2:model}"
+          date_created=models.DateTimeField(auto_now_add=True)
+          date_modified=models.DateTimeField(auto_now=True)
+          $3
+        """
+  'Foreign Key':
+    'prefix': 'dj.fk'
+    'body': "${1:fk}=models.ForeignKey(${2:model})$3"
+  'ManyToMany':
+    'prefix': 'dj.m2m'
+    'body': "${1:fk}=models.ManyToManyField(${2:model})$3"
+  'Null Boolean':
+    'prefix': 'dj.nb'
+    'body': "${1:fieldname}=models.NullBoolean()$2"
+  'Decimal Field':
+    'prefix': 'dj.dc'
+    'body': "${1:fieldname}=models.DecimalField()$2"
+  'IntegerField':
+    'prefix': 'dj.in'
+    'body': "${1:fieldname}=models.IntegerField"
+  'TextField':
+    'prefix': 'dj.txt'
+    'body': "${1:fieldname}=models.TextField(max_length=${2:1000},null=True${3:,})$4"
+  'Djang URL':
+    'prefix': 'dj.url'
+    'body': "url(r'^${1:url}/$',views.${2:view},name='${3:name}'),$4"
+  'Include URL':
+    'prefix': 'dj.urli'
+    'body': "url(r'^${1:app}/',include('${2:app}.urls')),"
+#---------------------------------------------------------------------
+#   GENERAL PYTHON SNIPPETS
+#---------------------------------------------------------------------
+
+  'Function':
+    'prefix': 'def.py'
+    'body': '''
+    def ${1:fname}(${2:args}):
+       """
+       ${3:docstring}
+       """
+       ${4:pass}
+    '''
+  'DocString':
+    'prefix': 'docstr'
+    'body':  '''
+     """
+      ${1:docstring}
+     """
+    '''
+
+#---------------------------------------------------------------------
+#   GENERAL PYTHON SNIPPETS
+#---------------------------------------------------------------------
+'text.html':
+  'HTML_BS4':
+    'prefix': 'html-bs4'
+    'body':
+      """
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <!-- Required meta tags -->
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+          <!-- Bootstrap CSS -->
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        </head>
+        <body>
+
+
+          <!-- jQuery first, then Tether, then Bootstrap JS. -->
+          <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        </body>
+      </html>
+      """
