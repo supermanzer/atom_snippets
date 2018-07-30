@@ -20,115 +20,308 @@
 # Atom Flight Manual:
 # http://flight-manual.atom.io/using-atom/sections/basic-customization/#_cson
 
-#------------------------------ PHP SNIPPETS ---------------------------------
-'.html.text.php':
-  'construct function':
-    'prefix': 'l:construct'
+# ---------- PYTHON SNIPPETS (MOSTLY DJANGO ) ------------------------
+'.source.python':
+  'IfElIfElse':
+     'prefix': 'ifele'
+     'body': """
+        if ${1:condition}:
+            ${2:action}
+        elif ${3:conditon}:
+            ${4:action}
+        else:
+            ${4:action}
+     """
+  'CharField':
+    'prefix': 'dj_cf'
+    'body': '${1:fieldname} = models.CharField(max_length=${2:0}, null=${3:True}, blank=${4:True}, help_text=${5:text})$6'
+  'DecField':
+    'prefix': 'dj_decf'
+    'body': '${1:fieldname} = models.DecimalField(max_digits=${2:0},decimal_places=${3:0},help_text=${4:text})$5'
+  'Created Date':
+    'prefix': 'dj_cd'
+    'body': 'created_date = models.DateField(auto_now_add=True)'
+  'Modified Date':
+    'prefix': 'dj_md'
+    'body': 'modified_date = models.DateField(auto_now=True)'
+  'Django Model':
+    'prefix': 'dj_model'
+    'body': """
+    class ${1:model}(models.Model):
+        \"\"\"
+        ${2:Docstring}
+        \"\"\"
+        date_created = models.DateTimeField(auto_now_add=True, help_text='date record created.')
+        date_modified = models.DateTimeField(auto_now=True, help_text='date of most recent record modification.')
+        created_by = models.ForeignKey('auth.User', \
+        help_text='user who created record.', \
+        null=True, blank=True, on_delete=models.${3:SET_NULL}, related_name='${1:model}_created')
+        modified_by=models.ForeignKey('auth.User', \
+        help_text='user who most recently modified record.', \
+        null=True, blank=True, on_delete=models.${4:SET_NULL}, related_name='${1:model}_modified')
+        $6
+
+        class Meta:
+            app_label = ${5:app_name}
+
+            """
+  'ForeignKey':
+    'prefix': 'dj_fk'
+    'body': '${1:fieldname} = models.ForeignKey(${2:model}, ${3:null=True,} on_delete=models.${4:SET_NULL})$5'
+  'ManytoMany':
+    'prefix': 'dj_m2m'
+    'body': '${1:fieldname} = models.ManyToManyField(${2:model})$3'
+  'DateTime':
+    'prefix': 'dj_dt'
+    'body': '${1:fieldname} = models.DateTimeField(help_text=${2:text})$3'
+  'NullBoolean':
+    'prefix': 'dj_nb'
+    'body': '${1:fieldname} = models.NullBooleanField()$2'
+  'Function Definition':
+    'prefix': 'def'
+    'body': """
+    def ${1:name}(${2:args}):
+        \"\"\"
+        ${3:docstring}
+        \"\"\"
+        ${4:pass}
+    """
+  'Integer':
+    'prefix': 'dj_int'
+    'body': '${1:fieldname} = models.IntegerField(default=${2:0})$3'
+  'URL':
+    'prefix': 'dj_url'
+    'body': """path('${1:url}/', views.${2:view}, name='${3:name}'),"""
+  'Django CBV Url':
+    'prefix': 'dj_curl'
+    'body': """
+        path('${1:url}/', views.${2:CBV}.as_view(), name='${3:name}')$4
+    """
+  'URL_I':
+    'prefix': 'dj_iurl'
+    'body': """path('${1:url}/', include("${2:app}.urls")),"""
+  'Text':
+    'prefix': 'dj_txt'
+    'body': """${1:fieldname} = models.TextField(help_text=${2:text})$3"""
+  '_Function':
+     'prefix': '_def'
+     'body': '''
+        def ${1:function_name}(${2:args}):
+            """
+            ${3:docstring}
+            """
+            ${4:pass}
+     '''
+
+    'Class Based View':
+      'prefix': 'cbv'
+      'body': '''
+      class ${1:ViewName}(${2:BaseClass}):
+          """
+          ${3:Docstring}
+          """
+          model = ${4:my_model}
+
+      '''
+  'Docstring':
+    'prefix': 'docstr',
+    'body': '''
+            """
+            ${1:Docstring}
+            """
+            '''
+    
+  'File Docstring':
+    'prefix': 'fdocstr'
+    'body': '''
+        """
+        ${1:filename}
+        ------------------------------------------
+        ${2:description}
+        """
+    '''
+    
+  'Google TODO':
+    'prefix': 'todo',
+    'body': '# TODO(${1:rmanzer@nordicnaturals.com}) $2'
+
+  'CBV Get Context Data':
+    'prefix': 'dj_gcd',
+    'body': '''
+        def get_context_data(self, *args, **kwargs):
+            context = super(${1:CBVName}, self).get_context_data(*args, **kwargs)
+            ${2:other_stuff}
+
+            return context
+    '''
+  'CBV JSON Response':
+    'prefix':  'dj_jsr',
+    'body': '''
+        def render_to_response(self, context, **response_kwargs):
+            return self.render_to_json_response(context, **response_kwargs)
+    '''
+  'Default Name == Main':
+    'prefix': 'inamem',
+    'body': '''
+    if __name__ == "__main__":
+        $1
+    '''
+
+  'Test Class':
+    'prefix': 'testc'
+    'body': '''
+    class ${1:MyTestClass}(TestCase):
+        """
+        ${2:docstring}
+        """
+
+        @classmethod
+        def setUpTestData(cls):
+            # setUpTestData is run once to create non-modified data that will be shared amongst all test methods.
+            pass
+
+        def setUp(self):
+            # setup method run before every test
+            ${3:pass}
+
+        def ${4:test_something}(self):
+            pass
+    '''
+  'REST Test Class':
+    'prefix': 'testr'
+    'body': '''
+    class ${1:MyTestClass}(APITestCase):
+        """
+        ${2:docstring}
+        """
+
+        def detail_url(self, obj):
+            return reverse("${3:url_name}", kwargs={'pk': obj.id})
+
+        @classmethod
+        def setUpTestData(cls):
+            # setUpTestData is run once to create non-modified data that will be shared amongst all test methods.
+            pass
+
+        def setUp(self):
+            # setup method run before every test
+            ${4:pass}
+
+        def ${5:test_get_list}(self):
+            """
+            Testing list API endpoint
+            """
+            pass
+
+        def ${6:test_get_detail}(self):
+            """
+            Testing detail API endpoint
+            """
+            pass
+
+    '''
+# -----------------  SQL SNIPPETS ------------------------
+'.source.sql':
+    'DropTableIfExists':
+        'prefix': 'dife'
+        'body': 'DROP TABLE IF EXISTS ${1:table};${2:}'
+    'TempTable':
+        'prefix': 'ctemp'
+        'body': 'CREATE TEMPORARY TABLE ${1:table} AS (${2:});'
+    'Update1':
+        'prefix': 'up1'
+        'body': 'UPDATE ${1:table} SET ${2:field} = ${3:val} WHERE ${4:field} LIKE ${5:val};'
+
+# --------------- YAML SNIPPETS (USED FOR LOOKER) --------------------
+'.source.yaml':
+    'dimension':
+        'prefix': 'l_dim'
+        'body': """
+        dimension: ${1:name} {
+          type: ${2:type}
+          sql: \${TABLE}.${3:field} ;;
+        }
+        """
+    'dimension_group':
+        'prefix': 'l_dimg'
+        'body': """
+        dimension_group: ${1:name} {
+            type: time
+            timeframes: [
+                raw,
+                date,
+                week,
+                month,
+                quarter,
+                year
+            ]
+            convert_tz: no
+            sql: ${2:field}
+        }
+        """
+#-------------------- JAVASCRIPT SNIPPETS ---------------------------
+'.source.js':
+  'Form_AJAX':
+    'prefix': 'js_ajx'
+    'body': """
+        $.ajax({
+            url: ${1:form.attr('action')},
+            type: ${2:form.attr('method')},
+            data: ${3:form.serialize()},
+            dataType:'json',
+            success: function(data){
+                $4
+            }
+        });
+
+    """
+  'D3 Width Height':
+    'prefix': 'wh_d3'
+    'body': """
+        var myHead=($("div.jumbotron").height() + $("nav").height()),
+        _width = $(window).innerWidth(),
+        _height = ($(window).innerHeight()-myHead);
+    """
+  'Docstring':
+    'prefix': 'js_docstr'
     'body': """
     /**
-    * Create a new object instance
-    *
-    * @return void
+    ${1:filename}.js
+----------------------------------------------------------------------
+    ${2:docstr}
     */
-    public function __construct()
-    {
-      //code...
-    }
     """
-  'font awesome icon':
-    'prefix': 'ifa'
-    'body': '<i class="fa fa-" aria-hidden="true"></i>'
-#-------------------------PYTHON SNIPPETS-------------------------------------
-
-# DJANGO SNIPPETS
-'.source.python':
-  'CharField':
-    'prefix': 'dj.cf'
-    'body':"${1:fieldname}=models.CharField(max_length=${2:0},null=True)$3"
-  'DateTime Field':
-    'prefix': 'dj.dt'
-    'body':'${1:fieldname}=models.DateTimeField()$2'
-  'Django Model':
-    'prefix': 'dj.mo'
-    'body': """
-      class ${1:model_name}(models.Model):
-          "Docstring for ${2:model}"
-          date_created=models.DateTimeField(auto_now_add=True)
-          date_modified=models.DateTimeField(auto_now=True)
-          created_by=models.ForeignKey('auth.User', related_name='creator', on_delete=models.SET_NULL)
-          modified_by=models.ForeignKey('auth.User', related_name='modifier', on_delete=models.SET_NULL)
-          $3
-        """
-  'Foreign Key':
-    'prefix': 'dj.fk'
-    'body': "${1:fk}=models.ForeignKey(${2:model})$3"
-  'ManyToMany':
-    'prefix': 'dj.m2m'
-    'body': "${1:fk}=models.ManyToManyField(${2:model})$3"
-  'Null Boolean':
-    'prefix': 'dj.nb'
-    'body': "${1:fieldname}=models.NullBoolean()$2"
-  'Decimal Field':
-    'prefix': 'dj.dc'
-    'body': "${1:fieldname}=models.DecimalField()$2"
-  'IntegerField':
-    'prefix': 'dj.in'
-    'body': "${1:fieldname}=models.IntegerField"
-  'TextField':
-    'prefix': 'dj.txt'
-    'body': "${1:fieldname}=models.TextField(max_length=${2:1000},null=True${3:,})$4"
-  'Djang URL':
-    'prefix': 'dj.url'
-    'body': "url(r'^${1:url}/$',views.${2:view},name='${3:name}'),$4"
-  'Include URL':
-    'prefix': 'dj.urli'
-    'body': "url(r'^${1:app}/',include('${2:app}.urls')),"
-#---------------------------------------------------------------------
-#   GENERAL PYTHON SNIPPETS
-#---------------------------------------------------------------------
-
-  'Function':
-    'prefix': 'def.py'
+#--------------------- HTML SNIPPETS ---------------------------------
+'.text.html.django':
+  'Card with Header':
+    'prefix': 'card_div'
     'body': '''
-    def ${1:fname}(${2:args}):
-       """
-       ${3:docstring}
-       """
-       ${4:pass}
+        <div class="card">
+            <div class="card-header text-center">
+                ${1}
+            </div>
+            <div class="card-body text-center">
+                ${2}
+            </div>
+            <div class="card-footer">
+                ${3}
+            </div>
+        </div>
     '''
-  'DocString':
-    'prefix': 'docstr'
-    'body':  '''
-     """
-      ${1:docstring}
-     """
+  'My HTML Starter':
+    'prefix': 'my_html'
+    'body': '''
+    <!--
+    #################################################################
+    ${1:app_name}/${2:filename}
+    #################################################################
+    ${3:file_desc}
+    -->
     '''
-
-#---------------------------------------------------------------------
-#   GENERAL PYTHON SNIPPETS
-#---------------------------------------------------------------------
-'text.html':
-  'HTML_BS4':
-    'prefix': 'html-bs4'
-    'body':
-      """
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <!-- Required meta tags -->
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-          <!-- Bootstrap CSS -->
-          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-        </head>
-        <body>
-
-
-          <!-- jQuery first, then Tether, then Bootstrap JS. -->
-          <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-        </body>
-      </html>
-      """
+  'Form Field w/ Label':
+    'prefix': 'ffield'
+    'body': '''
+    {{form.$1}}
+    <label for="{{form.$1.id_for_label}}">{{form.$1.label}}</label>
+    <small>{{form.$1.help_text}}</small>
+    '''
