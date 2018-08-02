@@ -95,7 +95,7 @@
   'Django CBV Url':
     'prefix': 'dj_curl'
     'body': """
-        path('${1:url}/', views.${2:CBV}.as_view(), name='${3:name}')$4
+        path('${1:url}/', views.${2:CBV}.as_view(), name='${3:name}'),$4
     """
   'URL_I':
     'prefix': 'dj_iurl'
@@ -130,7 +130,7 @@
             ${1:Docstring}
             """
             '''
-    
+
   'File Docstring':
     'prefix': 'fdocstr'
     'body': '''
@@ -140,7 +140,7 @@
         ${2:description}
         """
     '''
-    
+
   'Google TODO':
     'prefix': 'todo',
     'body': '# TODO(${1:rmanzer@nordicnaturals.com}) $2'
@@ -220,6 +220,9 @@
             pass
 
     '''
+  'REST test method':
+    'prefix': 'rtestdef'
+    'body': 'response = self.client.${1:method}(${2:url}, $3, format="json")'
 # -----------------  SQL SNIPPETS ------------------------
 '.source.sql':
     'DropTableIfExists':
@@ -232,33 +235,6 @@
         'prefix': 'up1'
         'body': 'UPDATE ${1:table} SET ${2:field} = ${3:val} WHERE ${4:field} LIKE ${5:val};'
 
-# --------------- YAML SNIPPETS (USED FOR LOOKER) --------------------
-'.source.yaml':
-    'dimension':
-        'prefix': 'l_dim'
-        'body': """
-        dimension: ${1:name} {
-          type: ${2:type}
-          sql: \${TABLE}.${3:field} ;;
-        }
-        """
-    'dimension_group':
-        'prefix': 'l_dimg'
-        'body': """
-        dimension_group: ${1:name} {
-            type: time
-            timeframes: [
-                raw,
-                date,
-                week,
-                month,
-                quarter,
-                year
-            ]
-            convert_tz: no
-            sql: ${2:field}
-        }
-        """
 #-------------------- JAVASCRIPT SNIPPETS ---------------------------
 '.source.js':
   'Form_AJAX':
@@ -324,4 +300,19 @@
     {{form.$1}}
     <label for="{{form.$1.id_for_label}}">{{form.$1.label}}</label>
     <small>{{form.$1.help_text}}</small>
+    '''
+  'Django For..Empty':
+    'prefix': 'forfirst'
+    'body': '''
+     {% for $1 in $2 %}
+        {% if forloop.first %}
+            $3
+        {% endif %}
+            $4
+        {% if forloop.last %}
+            $5
+        {% endif %}
+     {% empty %}
+        $5
+     {% endfor %}
     '''
