@@ -1,5 +1,5 @@
 # atom_snippets
-A centralized location for synchronizing ATOM snippets.cson file across various development machines.
+_A centralized location for synchronizing ATOM snippets.cson file across various development machines._
 
 
 I often find myself coming up with good ideas across multiple machines, OS's, and installs of Atom.  I will sometimes
