@@ -83,14 +83,9 @@ gulp.task('watch', function () {
     gulp.watch('_assets/js/d3/*js', ['d3-scripts', 'collectstatic']);
     gulp.watch('_assets/js/*.js', ['scripts', 'collectstatic']);
     // Watching App Specific Static Directories
-    gulp.watch('amazon_sales/static/amazon_sales/**/*.*', ['collectstatic', ]);
-    gulp.watch('analytics/static/analytics/**/*.*', ['collectstatic', ]);
-    gulp.watch('db_comments/static/db_comments/**/*.*', ['collectstatic', ]);
-    gulp.watch('emps/static/emps/**/*.*', ['collectstatic', ]);
-    gulp.watch('faq/static/faq/**/*.*', ['collectstatic', ]);
-    gulp.watch('home/static/home/**/*.*', ['collectstatic', ]);
-    gulp.watch('mps/static/mps/**/*.*', ['collectstatic', ]);
-    gulp.watch('warehouse/static/warehouse/**/*.*', ['collectstatic', ]);
+    // this will collect all files in the static directory for each app we register.
+    gulp.watch('app/static/app/**/*.*', ['collectstatic', ]);
+    
 })
 
 
