@@ -34,10 +34,10 @@
      """
   'CharField':
     'prefix': 'dj_cf'
-    'body': '${1:fieldname} = models.CharField(max_length=${2:0}, null=${3:True}, blank=${4:True}, help_text=${5:text})$6'
+    'body': '${1:fieldname} = models.CharField(max_length=${2:0}, null=${3:True}, blank=${4:True}, verbose_name="${5:vname}", help_text="${6:text}")$7'
   'DecField':
     'prefix': 'dj_decf'
-    'body': '${1:fieldname} = models.DecimalField(max_digits=${2:0},decimal_places=${3:0},help_text=${4:text})$5'
+    'body': '${1:fieldname} = models.DecimalField(max_digits=${2:0},decimal_places=${3:0},help_text="${4:text}", verbose_name="${5:vname}",)$6'
   'Created Date':
     'prefix': 'dj_cd'
     'body': 'created_date = models.DateField(auto_now_add=True)'
@@ -61,6 +61,12 @@
         null=True, blank=True, on_delete=models.${4:SET_NULL}, related_name='${1:model}_modified')
         $6
 
+        def get_absolute_url(self):
+            pass
+
+        def get_del_url(self):
+            pass
+
         class Meta:
             app_label = ${5:app_name}
 
@@ -73,10 +79,10 @@
     'body': '${1:fieldname} = models.ManyToManyField(${2:model})$3'
   'DateTime':
     'prefix': 'dj_dt'
-    'body': '${1:fieldname} = models.DateTimeField(help_text=${2:text})$3'
-  'NullBoolean':
+    'body': '${1:fieldname} = models.DateTimeField(help_text=${2:text}, verbose_name="${3:vname}")$4'
+  'Boolean':
     'prefix': 'dj_nb'
-    'body': '${1:fieldname} = models.NullBooleanField()$2'
+    'body': '${1:fieldname} = models.BooleanField(verbose_name="${2:vname}")$3'
   'Function Definition':
     'prefix': 'def'
     'body': """
@@ -88,7 +94,7 @@
     """
   'Integer':
     'prefix': 'dj_int'
-    'body': '${1:fieldname} = models.IntegerField(default=${2:0})$3'
+    'body': '${1:fieldname} = models.IntegerField(default=${2:0}, verbose_name="${3:vname}")$4'
   'URL':
     'prefix': 'dj_url'
     'body': """path('${1:url}/', views.${2:view}, name='${3:name}'),"""
@@ -122,6 +128,8 @@
           """
           model = ${4:my_model}
 
+          def render_to_response(self, context, **response_kwargs):
+              return self.render_to_json_response(context, **response_kwargs)
       '''
   'Docstring':
     'prefix': 'docstr',
@@ -149,7 +157,7 @@
     'prefix': 'dj_gcd',
     'body': '''
         def get_context_data(self, *args, **kwargs):
-            context = super(${1:CBVName}, self).get_context_data(*args, **kwargs)
+            context = super().get_context_data(*args, **kwargs)
             ${2:other_stuff}
 
             return context
@@ -160,6 +168,12 @@
         def render_to_response(self, context, **response_kwargs):
             return self.render_to_json_response(context, **response_kwargs)
     '''
+  'CBV MSG Response':
+      'prefix': 'dj_mp',
+      'body': '''
+        def post(self, request, *args, **kwargs):
+            return self.msg_post(request, *args, **kwargs)
+      '''
   'Default Name == Main':
     'prefix': 'inamem',
     'body': '''
@@ -223,6 +237,82 @@
   'REST test method':
     'prefix': 'rtestdef'
     'body': 'response = self.client.${1:method}(${2:url}, $3, format="json")'
+
+  'Model Admin Class':
+    'prefix': 'mac'
+    'body' : '''
+        @admin.register(${1:model})
+        class ${2:ModelAdmin}(admin.ModelAdmin):
+            pass
+    '''
+  'Custom PDB':
+      'prefix': 'pdb_'
+      'body': '''
+        if DEBUG:
+            import pdb; pdb.set_trace()
+      '''
+  'Django CRUD CBVs':
+      'prefix': 'dj_crudv'
+      'body':'''
+      # --------------- READ ONLY VIEWS -----------------
+      class ${1:Model}List(mixins.JSONResponseMixinn, generic.ListView):
+         """
+         List view for ${1:Model}
+         """
+         model = ${2:model}
+
+         def render_to_response(self, context, **response_kwargs):
+             return self.render_to_json_response(context, **response_kwargs)
+
+      class ${1:Model}Detail(mixins.JSONResponseMixinn, generic.DetailView):
+          """
+          Detail view for ${1:Model}
+          """
+          model = ${2:model}
+
+          def render_to_response(self, context, **response_kwargs):
+              return self.render_to_json_response(context, **response_kwargs)
+
+      # ---------------- WRITABLE VIEWS -----------------
+      class ${1:Model}Create(mixins.JSONResponseMixinn, generic.CreateView):
+          """
+          Create view for ${1:Model}
+          """
+          model = ${2:model}
+
+          def render_to_response(self, context, **response_kwargs):
+              return self.render_to_json_response(context, **response_kwargs)
+
+      class ${1:Model}Update(mixins.JSONResponseMixinn, generic.UpdateView):
+          """
+          Create view for ${1:Model}
+          """
+          model = ${2:model}
+
+          def render_to_response(self, context, **response_kwargs):
+              return self.render_to_json_response(context, **response_kwargs)
+
+      class ${1:Model}Delete(mixins.JSONResponseMixin, generic.DeleteView):
+          """
+          Create view for ${1:Model}
+          """
+          model = ${2:model}
+          template_name = 'home/ajax/confirm_delete.html'
+
+          def render_to_response(self, context, **response_kwargs):
+              return self.render_to_json_response(context, **response_kwargs)
+      '''
+    'Django CRUD Urls':
+        'prefix': 'dj_crud_url'
+        'body': '''
+            # ------------ READ ONLY URLS ---------------------
+            path('${1:model}/', views.${2:Model}List.as_view(), name='${1:model}-list'),
+            path('${1:model}/<int:pk>/', views.${2:Model}Detail.as_view(), name='${1:model}-detail'),
+            # -------------- WRITABLE URLS ---------------------
+            path('${1:model}/create/', views.${2:Model}Create.as_view(), name="create-${1:model}"),
+            path('${1:model}/<int:pk>/update/', views.${2:Model}Update.as_view(), name="update-${1:model}"),
+            path('${1:model}/<int:pk>/', views.${2:Model}Delete.as_view(), name="delete-${1:model}"),
+        '''
 # -----------------  SQL SNIPPETS ------------------------
 '.source.sql':
     'DropTableIfExists':
@@ -235,8 +325,46 @@
         'prefix': 'up1'
         'body': 'UPDATE ${1:table} SET ${2:field} = ${3:val} WHERE ${4:field} LIKE ${5:val};'
 
+# --------------- YAML SNIPPETS (USED FOR LOOKER) --------------------
+'.source.yaml':
+    'dimension':
+        'prefix': 'l_dim'
+        'body': """
+        dimension: ${1:name} {
+          type: ${2:type}
+          sql: \${TABLE}.${3:field} ;;
+        }
+        """
+    'dimension_group':
+        'prefix': 'l_dimg'
+        'body': """
+        dimension_group: ${1:name} {
+            type: time
+            timeframes: [
+                raw,
+                date,
+                week,
+                month,
+                quarter,
+                year
+            ]
+            convert_tz: no
+            sql: ${2:field}
+        }
+        """
 #-------------------- JAVASCRIPT SNIPPETS ---------------------------
 '.source.js':
+  'JS Module':
+    'prefix': 'js_mod'
+    'body': """
+            var ${1:name} = (function(){
+                    ${2:code}
+                    return {
+
+                    };
+                })();
+          """
+
   'Form_AJAX':
     'prefix': 'js_ajx'
     'body': """
@@ -266,6 +394,11 @@
 ----------------------------------------------------------------------
     ${2:docstr}
     */
+    """
+  'AEL':
+    'prefix': 'jael'
+    'body': """
+        ${1:document}.addEventListener('${2:DOMContentLoaded}', ${3:function});
     """
 #--------------------- HTML SNIPPETS ---------------------------------
 '.text.html.django':
@@ -315,4 +448,13 @@
      {% empty %}
         $5
      {% endfor %}
+    '''
+  'Bootstrap Form Div':
+    'prefix': 'bsfdiv'
+    'body': '''
+        <div class="form-group">
+            <label for="{{form.$1.id_for_label}}">{{form.%1.label}}</label>
+            {{form.$1}}
+            <small class="form-text text-muted">{{form.$1.help_text}}</small>
+        </div>
     '''
